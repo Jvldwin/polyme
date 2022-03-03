@@ -1,15 +1,10 @@
-import { StyleSheet, Button, Alert} from 'react-native';
+import { StyleSheet, Button, Alert, TouchableOpacity} from 'react-native';
 
 import { View, Text } from '../components/Themed';
 import { RootTabScreenProps} from '../types';
 
 interface question {
-  question: string,
-  answer: string,
-  A:string,
-  B:string,
-  C:string,
-  D:string
+  [key: string]: string
 }
 
 const questions : Array<question> = [{
@@ -32,11 +27,6 @@ const questions : Array<question> = [{
 export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'TabOne'>) {
   
   let Score:number = 0
-  
-  const answerA = questions[Score].A
-  const answerB = questions[Score].B
-  const answerC = questions[Score].C
-  const answerD = questions[Score].D
 
   if (route.params !== undefined) {
     Score = route.params.playerScore
@@ -56,6 +46,7 @@ export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'
     return (
       <Text>
         <Text>
+          00:00
           {Score}
           {questionText}
         </Text>
@@ -63,12 +54,21 @@ export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'
     );
   };
 
-  return (
-    <View style={styles.container}>
-      <TextInANest />
-      <Button
+  const createTouchOpacity = (e: string) => {
+    return (
+      <TouchableOpacity
+        style={{
+          marginTop: 20,
+          backgroundColor: 'gray',
+          width: '85%',
+          padding: 10,
+          justifyContent: 'center',
+          borderRadius: 25,
+          alignItems: 'center',
+          shadowOpacity: 5
+        }}
         onPress={() => {
-          if(AnswerCheck("A")) {
+          if(AnswerCheck(e)) {
             Alert.alert("Your answer is correct", "You gain 1 point", [
               {text: "Continue", onPress: () => {
                 if ( Score === questions.length-1) {
@@ -79,62 +79,25 @@ export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'
               }}
             ])
           } else {
-            navigation.navigate("TabTwo", { playerScore: Score })
+            Alert.alert("Your answer is incorrect", "That's fine", [{text: "Continue", onPress: () => {
+              navigation.navigate("TabTwo", { playerScore: Score })
+            }}])
           }
         }} 
-        title={answerA}
-        color="#841584"
         accessibilityLabel="Learn more about this purple button"
-      />
-      <Button
-        onPress={() => {
-          if(AnswerCheck("B")) {
-            Alert.alert("Your answer is correct", "You gain 1 point", [
-              {text: "Continue", onPress: () => {
-                navigation.navigate("TabOne", {playerScore: ++Score})
-              }}
-            ])
-          } else {
-            navigation.navigate("TabTwo", { playerScore: Score })
-          }
-        }} 
-        title={answerB}
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
-      <Button
-        onPress={() => {
-          console.log(AnswerCheck("C"))
-          if(AnswerCheck("C")) {
-            Alert.alert("Your answer is correct", "You gain 1 point", [
-              {text: "Continue", onPress: () => {
-                navigation.navigate("TabOne", {playerScore: ++Score})
-              }}
-            ])
-          } else {
-            navigation.navigate("TabTwo", { playerScore: Score })
-          }
-        }} 
-        title={answerC}
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
-      <Button
-        onPress={() => {
-          if(AnswerCheck("D")) {
-            Alert.alert("Your answer is correct", "You gain 1 point", [
-              {text: "Continue", onPress: () => {
-                navigation.navigate("TabOne", {playerScore: ++Score})
-              }}
-            ])
-          } else {
-            navigation.navigate("TabTwo", { playerScore: Score })
-          }
-        }} 
-        title={answerD}
-        color="#841584"
-        accessibilityLabel="Learn more about this purple button"
-      />
+      >
+        <Text>{questions[Score][e]}</Text>
+      </TouchableOpacity>
+    )
+  }
+
+  return (
+    <View style={styles.container}>
+      <TextInANest />
+      { createTouchOpacity("A") }
+      { createTouchOpacity("B") }
+      { createTouchOpacity("C") }
+      { createTouchOpacity("D") }
     </View>
   );
 }
@@ -144,14 +107,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
 });

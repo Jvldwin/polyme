@@ -3,7 +3,7 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import { Text as DefaultText, TouchableOpacityProps, View as DefaultView } from 'react-native';
+import { Text as DefaultText, TouchableOpacityProps, View as DefaultView, StyleSheet } from 'react-native';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
@@ -43,3 +43,29 @@ export function View(props: ViewProps) {
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#C82DED'
+  },
+  touchOpacity: {
+    margin: 8,
+    backgroundColor: 'white',
+    width: '65%',
+    padding: 20,
+    justifyContent: 'center',
+    borderRadius: 25,
+    alignItems: 'center',
+    shadowOpacity: 5
+  },
+  primaryText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 25,
+    margin: 8, 
+  }
+});

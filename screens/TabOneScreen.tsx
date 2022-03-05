@@ -1,6 +1,7 @@
-import { StyleSheet, Button, Alert, TouchableOpacity} from 'react-native';
+import React from 'react';
+import {  Alert, TouchableOpacity} from 'react-native';
 
-import { View, Text } from '../components/Themed';
+import { View, Text, styles } from '../components/Themed';
 import { RootTabScreenProps} from '../types';
 
 interface question {
@@ -28,6 +29,23 @@ export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'
   
   let Score:number = 0
 
+  const [timerCount, setTimer] = React.useState(3)
+
+  React.useEffect(() => {
+    let interval = setInterval(() => {
+      setTimer(lastTimerCount => {
+          if (lastTimerCount <= 1 ) { clearInterval(interval)
+             
+          }
+          return lastTimerCount - 1
+      })
+    }, 1000) //each count lasts for a second
+    //cleanup the interval on complete
+    return () => { 
+      clearInterval(interval)
+    }
+  }, [])
+
   if (route.params !== undefined) {
     Score = route.params.playerScore
   }
@@ -46,7 +64,7 @@ export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'
     return (
       <Text>
         <Text>
-          00:00
+          {timerCount}
           {Score}
           {questionText}
         </Text>
@@ -57,16 +75,7 @@ export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'
   const createTouchOpacity = (e: string) => {
     return (
       <TouchableOpacity
-        style={{
-          marginTop: 20,
-          backgroundColor: 'gray',
-          width: '85%',
-          padding: 10,
-          justifyContent: 'center',
-          borderRadius: 25,
-          alignItems: 'center',
-          shadowOpacity: 5
-        }}
+        style={styles.touchOpacity}
         onPress={() => {
           if(AnswerCheck(e)) {
             Alert.alert("Your answer is correct", "You gain 1 point", [
@@ -89,7 +98,7 @@ export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'
         <Text>{questions[Score][e]}</Text>
       </TouchableOpacity>
     )
-  }
+  } 
 
   return (
     <View style={styles.container}>
@@ -101,11 +110,3 @@ export default function TabOneScreen({ route, navigation }: RootTabScreenProps<'
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
